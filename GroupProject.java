@@ -1,9 +1,12 @@
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -36,7 +39,7 @@ public class GroupProject extends Application {
         menu.getItems().addAll(menuSave,menuLoad, new SeparatorMenuItem(), colorMenu());
 
         Group shapeGroup = new Group();
-        shapeScene = new SubScene(shapeGroup,340,340);
+        shapeScene = new SubScene(shapeGroup,450,530);
         shapeScene.setFill(Color.AZURE);
 
         VBox shapeNode = new VBox(10);
@@ -45,6 +48,13 @@ public class GroupProject extends Application {
         BorderPane pane = new BorderPane();
         pane.setTop(menuBar);
         pane.setCenter(shapeNode);
+        pane.setLeft(shapeScene);
+        HBox buttonVbox = new HBox(10, addShape);
+        buttonVbox.setPadding(new Insets(50));
+        buttonVbox.setAlignment(Pos.CENTER);
+        buttonVbox.setId("buttonVbox");
+
+        pane.setBottom(buttonVbox);
 
         menuLoad.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
@@ -66,6 +76,7 @@ public class GroupProject extends Application {
 
 
         Scene scene = new Scene(pane, 800, 800);
+        scene.getStylesheets().add("style.css");
         primaryStage.setScene(scene);
         primaryStage.show();
 
