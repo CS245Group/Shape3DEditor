@@ -65,7 +65,7 @@ public class GroupProject extends Application {
 
 
 
-        Scene scene = new Scene(pane);
+        Scene scene = new Scene(pane, 800, 800);
         primaryStage.setScene(scene);
         primaryStage.show();
 
