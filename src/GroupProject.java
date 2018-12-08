@@ -1,4 +1,6 @@
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -13,14 +15,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.Sphere;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Translate;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class GroupProject extends Application {
@@ -28,7 +31,7 @@ public class GroupProject extends Application {
         launch(args);
     }
 
-
+    private Label shapeLabel;
     private SubScene shapeScene;
     private int x = 0;
     private int y = 0;
@@ -37,9 +40,14 @@ public class GroupProject extends Application {
     private int radius = 0;
     private int depth = 0;
     private Group shapeGroup;
+    private Stage window;
+    private Scene addShapeScene;
+    private VBox shapeVbox;
 
     public void start(Stage primaryStage) throws IOException{
+        window = primaryStage;
         Button addShape = new Button("Add Shapes");
+        Button submitButton = new Button("Submit");
         Menu menu = new Menu("Files");
 
 
@@ -67,7 +75,6 @@ public class GroupProject extends Application {
         buttonVbox.setId("buttonVbox");
 
         pane.setBottom(buttonVbox);
-
 
         //This lambda expression loads in a .txt file
         menuLoad.setOnAction(event -> {
@@ -126,6 +133,83 @@ public class GroupProject extends Application {
 
 
         Scene scene = new Scene(pane, 800, 800);
+
+        //  addShape scene
+        BorderPane shapePane = new BorderPane();
+        addShape.setOnAction(e -> window.setScene(addShapeScene));
+
+        RadioButton sphereButton = new RadioButton("Sphere");
+        RadioButton boxButton = new RadioButton("Box");
+        RadioButton cylinderButton = new RadioButton("Cylinder");
+
+        ToggleGroup shapeToggle = new ToggleGroup();
+        sphereButton.setToggleGroup(shapeToggle);
+        boxButton.setToggleGroup(shapeToggle);
+        cylinderButton.setToggleGroup(shapeToggle);
+        sphereButton.setSelected(true);
+
+        Label shapeLabel = new Label("Select a Shape:");
+        HBox shapeHbox = new HBox(20, sphereButton, boxButton, cylinderButton);
+        shapeHbox.setAlignment(Pos.CENTER);
+
+        //Sphere scene
+        Text sphereRadiusText = new Text("Radius: ");
+        Text sphereXText = new Text("X Translate: ");
+        Text sphereYText = new Text("Y Translate: ");
+        TextField sphereRadius = new TextField();
+        TextField sphereTranslateX = new TextField();
+        TextField sphereTranslateY = new TextField();
+
+        //Box scene
+        Text boxWidthText = new Text("Width: ");
+        Text boxHeightText = new Text("Height: ");
+        Text boxDepthText = new Text("Depth: ");
+        Text boxXText = new Text("X Translate: ");
+        Text boxYText = new Text("Y Translate: ");
+        TextField boxWidth = new TextField();
+        TextField boxHeight = new TextField();
+        TextField boxDepth = new TextField();
+        TextField boxTranslateX = new TextField();
+        TextField boxTranslateY = new TextField();
+
+        //Cylinder scene
+        Text cylinderDepthText = new Text("Depth: ");
+        Text cylinderRadiusText = new Text("Radius: ");
+        Text cylinderXText = new Text("X Translate: ");
+        Text cylinderYText = new Text("Y Translate: ");
+        TextField cylinderDepth = new TextField();
+        TextField cylinderRadius = new TextField();
+        TextField cylinderTranslateX = new TextField();
+        TextField cylinderTranslateY = new TextField();
+
+        sphereButton.setOnAction(event ->{
+            shapeVbox = new VBox(20, shapeLabel, shapeHbox, new HBox(10, sphereRadiusText, sphereRadius), new HBox(10, sphereXText, sphereTranslateX), new HBox(10, sphereYText, sphereTranslateY), submitButton);
+            shapeVbox.setPadding(new Insets(50));
+            shapeVbox.setAlignment(Pos.CENTER);
+            shapePane.setTop(shapeVbox);
+            createSphere(Integer.parseInt(sphereTranslateX.getText()), Integer.parseInt(sphereTranslateY.getText()), Integer.parseInt(sphereRadius.getText()));
+        });
+
+        boxButton.setOnAction(event -> {
+            shapeVbox = new VBox(20, shapeLabel, shapeHbox, new HBox(10, boxWidthText, boxWidth), new HBox(10, boxHeightText, boxHeight), new HBox(10, boxDepthText, boxDepth), new HBox(10, boxXText, boxTranslateX), new HBox(10, boxYText, boxTranslateY), submitButton);
+            shapeVbox.setPadding(new Insets(50));
+            shapeVbox.setAlignment(Pos.CENTER);
+            shapePane.setTop(shapeVbox);
+        });
+        cylinderButton.setOnAction(event ->{
+            shapeVbox = new VBox(20, shapeLabel, shapeHbox, new HBox(10, cylinderDepthText, cylinderDepth), new HBox(10, cylinderRadiusText, cylinderRadius), new HBox(10, cylinderXText, cylinderTranslateX), new HBox(10, cylinderYText, cylinderTranslateY), submitButton);
+            shapeVbox.setPadding(new Insets(50));
+            shapeVbox.setAlignment(Pos.CENTER);
+            shapePane.setTop(shapeVbox);
+        });
+        shapeVbox = new VBox(20, shapeLabel, shapeHbox, new HBox(10, sphereRadiusText, sphereRadius), new HBox(10, sphereXText, sphereTranslateX), new HBox(10, sphereYText, sphereTranslateY), submitButton);
+        shapeVbox.setPadding(new Insets(50));
+        shapePane.setTop(shapeVbox);
+        shapeVbox.setAlignment(Pos.CENTER);
+        addShapeScene = new Scene(shapePane, 600, 600);
+        submitButton.setOnAction(e -> window.setScene(scene));
+
+
         scene.getStylesheets().add("style.css");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -192,8 +276,6 @@ public class GroupProject extends Application {
         });
         shapeGroup.getChildren().add(cylinder);
     }
-
-
 
 
 
