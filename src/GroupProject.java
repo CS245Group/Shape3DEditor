@@ -5,10 +5,13 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Box;
+import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Translate;
 import javafx.stage.FileChooser;
@@ -89,6 +92,7 @@ public class GroupProject extends Application {
                                 x = Integer.parseInt(str[1]);
                                 y = Integer.parseInt(str[2]);
                                 radius = Integer.parseInt(str[3]);
+                                createSphere(x,y,radius);
                                 break;
 
                             case "Cylinder":
@@ -96,6 +100,7 @@ public class GroupProject extends Application {
                                 y = Integer.parseInt(str[2]);
                                 radius = Integer.parseInt(str[3]);
                                 depth = Integer.parseInt(str[4]);
+                                createCylinder(x,y,radius,depth);
                                 break;
 
                             case "Box":
@@ -104,6 +109,7 @@ public class GroupProject extends Application {
                                 width = Integer.parseInt(str[3]);
                                 height = Integer.parseInt(str[4]);
                                 depth = Integer.parseInt(str[5]);
+                                createBox(x,y,width,height,depth);
                                 break;
                         }
                     }
@@ -156,6 +162,38 @@ public class GroupProject extends Application {
         colorMenu.getItems().addAll(original,red,blue,green);
         return colorMenu;
     }
+
+
+    public void createBox(int x, int y, int width, int height, int depth){
+        Box box = new Box(width,height,depth);
+        box.getTransforms().add(new Translate(x,y,0));
+
+        box.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            System.out.println("worked box");
+
+        });
+        shapeGroup.getChildren().add(box);
+    }
+
+    public void createSphere(int x, int y, int radius){
+        Sphere sphere = new Sphere(radius);
+        sphere.getTransforms().add(new Translate(x,y,0));
+        sphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            System.out.println("worked sphere");
+        });
+        shapeGroup.getChildren().add(sphere);
+    }
+
+    public void createCylinder(int x, int y, int radius, int depth){
+        Cylinder cylinder = new Cylinder(radius,depth);
+        cylinder.getTransforms().add(new Translate(x,y,0));
+        cylinder.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            System.out.println("worked cylinder");
+        });
+        shapeGroup.getChildren().add(cylinder);
+    }
+
+
 
 
 
