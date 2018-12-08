@@ -9,6 +9,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Sphere;
+import javafx.scene.transform.Translate;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -30,6 +32,8 @@ public class GroupProject extends Application {
     private int width = 0;
     private int height = 0;
     private int radius = 0;
+    private int depth = 0;
+    private Group shapeGroup;
 
     public void start(Stage primaryStage) throws IOException{
         Button addShape = new Button("Add Shapes");
@@ -43,7 +47,7 @@ public class GroupProject extends Application {
         menuBar.getMenus().add(menu);
         menu.getItems().addAll(menuSave,menuLoad, new SeparatorMenuItem(), colorMenu());
 
-        Group shapeGroup = new Group();
+        shapeGroup = new Group();
         shapeScene = new SubScene(shapeGroup,450,530);
         shapeScene.setFill(Color.AZURE);
 
@@ -78,7 +82,7 @@ public class GroupProject extends Application {
                     //Reads in one line at a time
                     while(fileReader.hasNextLine()){
 
-                        String[] str = fileReader.nextLine().split(" ", 10000);
+                        String[] str = fileReader.nextLine().split(" ");
 
                         switch (str[0]){
                             case "Sphere":
@@ -87,11 +91,11 @@ public class GroupProject extends Application {
                                 radius = Integer.parseInt(str[3]);
                                 break;
 
-                            case "Square":
+                            case "Cylinder":
                                 x = Integer.parseInt(str[1]);
                                 y = Integer.parseInt(str[2]);
-                                width = Integer.parseInt(str[3]);
-                                height = Integer.parseInt(str[4]);
+                                radius = Integer.parseInt(str[3]);
+                                depth = Integer.parseInt(str[4]);
                                 break;
 
                             case "Box":
@@ -99,6 +103,7 @@ public class GroupProject extends Application {
                                 y = Integer.parseInt(str[2]);
                                 width = Integer.parseInt(str[3]);
                                 height = Integer.parseInt(str[4]);
+                                depth = Integer.parseInt(str[5]);
                                 break;
                         }
                     }
