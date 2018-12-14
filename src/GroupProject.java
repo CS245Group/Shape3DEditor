@@ -73,6 +73,10 @@ public class GroupProject extends Application {
         buttonVbox.setPadding(new Insets(50));
         buttonVbox.setAlignment(Pos.CENTER);
         buttonVbox.setId("buttonVbox");
+        
+
+
+
 
         pane.setBottom(buttonVbox);
 
@@ -128,7 +132,7 @@ public class GroupProject extends Application {
         });
 
         menuSave.setOnAction(event ->{
-            //TODO
+
         });
 
 
@@ -182,12 +186,13 @@ public class GroupProject extends Application {
         TextField cylinderTranslateX = new TextField();
         TextField cylinderTranslateY = new TextField();
 
+
+
         sphereButton.setOnAction(event ->{
             shapeVbox = new VBox(20, shapeLabel, shapeHbox, new HBox(10, sphereRadiusText, sphereRadius), new HBox(10, sphereXText, sphereTranslateX), new HBox(10, sphereYText, sphereTranslateY), submitButton);
             shapeVbox.setPadding(new Insets(50));
             shapeVbox.setAlignment(Pos.CENTER);
             shapePane.setTop(shapeVbox);
-            createSphere(Integer.parseInt(sphereTranslateX.getText()), Integer.parseInt(sphereTranslateY.getText()), Integer.parseInt(sphereRadius.getText()));
         });
 
         boxButton.setOnAction(event -> {
@@ -207,7 +212,17 @@ public class GroupProject extends Application {
         shapePane.setTop(shapeVbox);
         shapeVbox.setAlignment(Pos.CENTER);
         addShapeScene = new Scene(shapePane, 600, 600);
-        submitButton.setOnAction(e -> window.setScene(scene));
+        submitButton.setOnAction(e ->{
+            if(boxButton.isSelected())
+                createBox(Integer.parseInt(boxTranslateX.getText()),Integer.parseInt(boxTranslateY.getText()),Integer.parseInt(boxWidth.getText()), Integer.parseInt(boxHeight.getText()),Integer.parseInt(boxDepth.getText()));
+            if(sphereButton.isSelected())
+                createSphere(Integer.parseInt(sphereTranslateX.getText()), Integer.parseInt(sphereTranslateY.getText()), Integer.parseInt(sphereRadius.getText()));
+            if(cylinderButton.isSelected())
+                createCylinder(Integer.parseInt(cylinderTranslateX.getText()),Integer.parseInt(cylinderTranslateY.getText()),Integer.parseInt(cylinderRadius.getText()),Integer.parseInt(cylinderDepth.getText()));
+
+            window.setScene(scene);
+
+        });
 
 
         scene.getStylesheets().add("style.css");
@@ -253,8 +268,6 @@ public class GroupProject extends Application {
         box.getTransforms().add(new Translate(x,y,0));
 
         box.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            System.out.println("worked box");
-
         });
         shapeGroup.getChildren().add(box);
     }
@@ -263,7 +276,6 @@ public class GroupProject extends Application {
         Sphere sphere = new Sphere(radius);
         sphere.getTransforms().add(new Translate(x,y,0));
         sphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            System.out.println("worked sphere");
         });
         shapeGroup.getChildren().add(sphere);
     }
@@ -272,7 +284,6 @@ public class GroupProject extends Application {
         Cylinder cylinder = new Cylinder(radius,depth);
         cylinder.getTransforms().add(new Translate(x,y,0));
         cylinder.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            System.out.println("worked cylinder");
         });
         shapeGroup.getChildren().add(cylinder);
     }
