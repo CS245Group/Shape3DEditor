@@ -65,6 +65,10 @@ public class GroupProject extends Application {
     private Slider YSliderRotate;
     private Slider ZSliderRotate;
 
+    private Slider rSlider;
+    private Slider gSlider;
+    private Slider bSlider;
+
     private Rotate X_Rotate;
     private Rotate Y_Rotate;
     private Rotate Z_Rotate;
@@ -78,6 +82,8 @@ public class GroupProject extends Application {
     private TextField YscaleField;
     private TextField ZscaleField;
     private TextField colorField;
+
+    private ColorPicker colorPicker = new ColorPicker();
 
     private ChoiceBox<String> colorChoice;
 
@@ -131,6 +137,7 @@ public class GroupProject extends Application {
         ZSliderRotate.setShowTickLabels(true);
         ZSliderRotate.setShowTickMarks(true);
 
+
         VBox rotateVbox = new VBox(5,Xrotate,XSliderRotate,Yrotate,YSliderRotate,Zrotate,ZSliderRotate);
 
         Label Xtranslate = new Label("X Translate");
@@ -168,7 +175,7 @@ public class GroupProject extends Application {
         HBox colorHbox = new HBox(5,colorLabel,colorChoice);
 
 
-        VBox toolBox = new VBox(10,rotateVbox,translateVbox,scaleVbox,colorHbox);
+        VBox toolBox = new VBox(10,rotateVbox,translateVbox,scaleVbox,colorPicker);
 
         pane.setCenter(toolBox);
 
@@ -517,6 +524,31 @@ public class GroupProject extends Application {
                 box.setMaterial(new PhongMaterial(Color.RED));
         });
         shapeGroup.getChildren().add(box);
+        box.setOnMouseClicked(event -> {
+            selectedShape = box;
+        });
+
+        XSliderRotate.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            if(selectedShape.equals(box))
+            {
+                box.getTransforms().add(new Rotate((double)newValue, Rotate.X_AXIS));
+            }
+        }));
+        YSliderRotate.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            if(selectedShape.equals(box))
+            {
+                box.getTransforms().add(new Rotate((double)newValue, Rotate.Y_AXIS));
+            }
+        }));
+        ZSliderRotate.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            if(selectedShape.equals(box))
+            {
+                box.getTransforms().add(new Rotate((double)newValue, Rotate.Z_AXIS));
+            }
+        }));
+        colorPicker.setOnAction(e->{
+            selectedShape.setMaterial(new PhongMaterial(colorPicker.getValue()));
+        });
     }
 
     public void createSphere(double x, double y, double radius){
@@ -548,6 +580,30 @@ public class GroupProject extends Application {
                 sphere.setMaterial(new PhongMaterial(Color.RED));
         });
         shapeGroup.getChildren().add(sphere);
+        sphere.setOnMouseClicked(event -> {
+            selectedShape = sphere;
+        });
+        XSliderRotate.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            if(selectedShape.equals(sphere))
+            {
+                sphere.getTransforms().add(new Rotate((double)newValue, Rotate.X_AXIS));
+            }
+        }));
+        YSliderRotate.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            if(selectedShape.equals(sphere))
+            {
+                sphere.getTransforms().add(new Rotate((double)newValue, Rotate.Y_AXIS));
+            }
+        }));
+        ZSliderRotate.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            if(selectedShape.equals(sphere))
+            {
+                sphere.getTransforms().add(new Rotate((double)newValue, Rotate.Z_AXIS));
+            }
+        }));
+        colorPicker.setOnAction(e->{
+            selectedShape.setMaterial(new PhongMaterial(colorPicker.getValue()));
+        });
     }
 
     public void createCylinder(double x, double y, double radius, double depth){
@@ -569,7 +625,6 @@ public class GroupProject extends Application {
                 cylinder.getTransforms().addAll(scale);
             }
             catch (NumberFormatException e){}
-
             if(colorChoice.getSelectionModel().getSelectedItem() == "BLUE")
                 cylinder.setMaterial(new PhongMaterial(Color.BLUE));
             if(colorChoice.getSelectionModel().getSelectedItem() == "GREEN")
@@ -578,6 +633,30 @@ public class GroupProject extends Application {
                 cylinder.setMaterial(new PhongMaterial(Color.RED));
         });
         shapeGroup.getChildren().add(cylinder);
+        cylinder.setOnMouseClicked(event -> {
+            selectedShape = cylinder;
+        });
+        XSliderRotate.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            if(selectedShape.equals(cylinder))
+            {
+                cylinder.getTransforms().add(new Rotate((double)newValue, Rotate.X_AXIS));
+            }
+        }));
+        YSliderRotate.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            if(selectedShape.equals(cylinder))
+            {
+                cylinder.getTransforms().add(new Rotate((double)newValue, Rotate.Y_AXIS));
+            }
+        }));
+        ZSliderRotate.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            if(selectedShape.equals(cylinder))
+            {
+                cylinder.getTransforms().add(new Rotate((double)newValue, Rotate.Z_AXIS));
+            }
+        }));
+        colorPicker.setOnAction(e->{
+            selectedShape.setMaterial(new PhongMaterial(colorPicker.getValue()));
+        });
     }
 
     ChoiceBox<String> getColorChoices()
