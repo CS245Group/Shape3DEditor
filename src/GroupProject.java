@@ -1,9 +1,11 @@
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
@@ -20,6 +22,7 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import java.io.File;
 import java.io.FileWriter;
@@ -28,23 +31,33 @@ import java.io.PrintWriter;
 import java.util.Optional;
 import java.util.Scanner;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
 public class GroupProject extends Application {
     public static void main(String[] args) throws IOException{
         launch(args);
     }
 
+
     private Label shapeLabel;
     private SubScene shapeScene;
-    private int x = 0;
-    private int y = 0;
-    private int width = 0;
-    private int height = 0;
-    private int radius = 0;
-    private int depth = 0;
+    private double x = 0;
+    private double y = 0;
+    private double z = 0;
+    private double width = 0;
+    private double height = 0;
+    private double radius = 0;
+    private double depth = 0;
     private Group shapeGroup;
     private Stage window;
     private Scene addShapeScene;
     private VBox shapeVbox;
+    private File savedFile = new File("");
 
     private Slider XSliderRotate;
     private Slider YSliderRotate;
@@ -65,18 +78,21 @@ public class GroupProject extends Application {
     private TextField colorField;
 
     public void start(Stage primaryStage) throws IOException{
+
         window = primaryStage;
         Button addShape = new Button("Add Shapes");
         Button submitButton = new Button("Submit");
         Menu menu = new Menu("Files");
 
 
-        MenuItem menuSave = new MenuItem("Save");
+        MenuItem menuSave = new MenuItem("Save As");
+        MenuItem save = new MenuItem("Save");
         MenuItem menuLoad = new MenuItem("Load");
+        MenuItem menuChangeColor = new MenuItem("Change Background Color");
 
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().add(menu);
-        menu.getItems().addAll(menuSave,menuLoad, new SeparatorMenuItem(), colorMenu());
+        menu.getItems().addAll(menuSave, save, menuLoad, new SeparatorMenuItem(), colorMenu());
 
         shapeGroup = new Group();
         shapeScene = new SubScene(shapeGroup,450,530);
@@ -152,11 +168,11 @@ public class GroupProject extends Application {
 
         pane.setBottom(buttonVbox);
 
-        //This lambda expression loads in a .txt file
         menuLoad.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add( new FileChooser.ExtensionFilter("txt", "*.txt"));
             File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            savedFile = selectedFile;
             if (selectedFile != null) {
                 try {
                     //Opening the txt file to read.
@@ -172,26 +188,29 @@ public class GroupProject extends Application {
 
                         switch (str[0]){
                             case "Sphere":
-                                x = Integer.parseInt(str[1]);
-                                y = Integer.parseInt(str[2]);
-                                radius = Integer.parseInt(str[3]);
+                                x = Double.parseDouble(str[1]);
+                                y = Double.parseDouble(str[2]);
+                                z = Double.parseDouble(str[3]);
+                                radius = Double.parseDouble(str[4]);
                                 createSphere(x,y,radius);
                                 break;
 
                             case "Cylinder":
-                                x = Integer.parseInt(str[1]);
-                                y = Integer.parseInt(str[2]);
-                                radius = Integer.parseInt(str[3]);
-                                depth = Integer.parseInt(str[4]);
+                                x = Double.parseDouble(str[1]);
+                                y = Double.parseDouble(str[2]);
+                                z = Double.parseDouble(str[3]);
+                                radius = Double.parseDouble(str[4]);
+                                depth = Double.parseDouble(str[5]);
                                 createCylinder(x,y,radius,depth);
                                 break;
 
                             case "Box":
-                                x = Integer.parseInt(str[1]);
-                                y = Integer.parseInt(str[2]);
-                                width = Integer.parseInt(str[3]);
-                                height = Integer.parseInt(str[4]);
-                                depth = Integer.parseInt(str[5]);
+                                x = Double.parseDouble(str[1]);
+                                y = Double.parseDouble(str[2]);
+                                z = Double.parseDouble(str[3]);
+                                width = Double.parseDouble(str[4]);
+                                height = Double.parseDouble(str[5]);
+                                depth = Double.parseDouble(str[6]);
                                 createBox(x,y,width,height,depth);
                                 break;
                         }
@@ -203,14 +222,41 @@ public class GroupProject extends Application {
             }
         });
 
+        //Calls save file method
+        save.setOnAction(event ->{
+            try
+            {
+                saveFile(shapeGroup);
+            }
+            catch (IOException e1)
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Error: File not found");
+                alert.show();
+            }
+        });
         menuSave.setOnAction(event ->{
+            try
+            {
+                buildNewFile(primaryStage);
+            }
+            catch (IOException e1)
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Error: File not found");
+                alert.show();
+            }
+        });
+
+        menuChangeColor.setOnAction(event -> {
 
         });
 
 
+
         Scene scene = new Scene(pane, 800, 800);
 
-        //  addShape scene
+        //addShape scene
         BorderPane shapePane = new BorderPane();
         addShape.setOnAction(e -> window.setScene(addShapeScene));
 
@@ -232,7 +278,7 @@ public class GroupProject extends Application {
         Text sphereRadiusText = new Text("Radius: ");
         Text sphereXText = new Text("X Translate: ");
         Text sphereYText = new Text("Y Translate: ");
-        TextField sphereRadius = new TextField("");
+        TextField sphereRadius = new TextField();
         TextField sphereTranslateX = new TextField("");
         TextField sphereTranslateY = new TextField("");
 
@@ -296,34 +342,31 @@ public class GroupProject extends Application {
 
         });
 
-
         scene.getStylesheets().add("style.css");
         primaryStage.setScene(scene);
         primaryStage.show();
+
 
     }
 
     private Menu colorMenu(){
         Menu colorMenu = new Menu("Change BackGround Color");
 
-        //add the menu items to a submenu
-        //Note change variable name if changing color
         MenuItem red = new MenuItem("Red");
         MenuItem blue = new MenuItem("Blue");
         MenuItem green = new MenuItem("Green");
         MenuItem original = new MenuItem("Original");
 
-        //Use "Color.web()" to use hex colors
         red.setOnAction(event -> {
-            shapeScene.setFill(Color.web("FED6BB"));
+            shapeScene.setFill(Color.RED);
         });
 
         blue.setOnAction(event -> {
-            shapeScene.setFill(Color.web("84E5E5"));
+            shapeScene.setFill(Color.BLUE);
         });
 
         green.setOnAction(event -> {
-            shapeScene.setFill(Color.web("BBFEC2"));
+            shapeScene.setFill(Color.GREEN);
         });
 
         original.setOnAction(event -> {
@@ -334,66 +377,131 @@ public class GroupProject extends Application {
         return colorMenu;
     }
 
+    //Saves a new file
+    private void buildNewFile(Stage primaryStage) throws IOException
+    {
+        FileChooser save = new FileChooser();
+        save.getExtensionFilters().add(new ExtensionFilter("Text Files", "*.txt"));
+        savedFile = save.showSaveDialog(primaryStage);
+        try
+        {
+            PrintWriter pw = new PrintWriter(savedFile);
+            pw.close();
+        }
+        catch(FileNotFoundException e)
+        {
+            Alert error = new Alert(Alert.AlertType.ERROR);
+            error.setHeaderText("Error: File cannot be created");
+            error.show();
+        }
+        saveFile(shapeGroup);
 
-    public void createBox(int x, int y, int width, int height, int depth){
+    }
+
+    //Updates save file
+    private void saveFile(Group shapes) throws IOException
+    {
+        ObservableList<Node> list = shapes.getChildren();
+        Shape3D testShape;
+        double x = 0;
+        double y = 0;
+        double z = 0;
+        double radius = 0;
+        double depth = 0;
+        double height = 0;
+        double width = 0;
+        FileWriter fileWriter = new FileWriter(savedFile.getPath(), true);
+        PrintWriter outputFile = new PrintWriter(fileWriter);
+
+        for(int i = 0; i < list.size(); i++)
+        {
+            testShape = (Shape3D) list.get(i);
+
+            if(testShape instanceof Cylinder)
+            {
+                x = testShape.getTranslateX();
+                y = testShape.getTranslateY();
+                z = testShape.getTranslateZ();
+                radius = ((Cylinder) testShape).getRadius();
+                height = ((Cylinder) testShape).getHeight();
+                try
+                {
+                    outputFile.println("Cylinder " + x + " " + y + " " + z + " " + radius + " " + height);
+
+                }
+                catch(Exception e)
+                {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText("Could not save file");
+                    alert.show();
+                }
+            }
+            else if(testShape instanceof Box)
+            {
+                x = testShape.getTranslateX();
+                y = testShape.getTranslateY();
+                z = testShape.getTranslateZ();
+                width = ((Box) testShape).getWidth();
+                height = ((Box) testShape).getHeight();
+                depth = ((Box) testShape).getDepth();
+                try
+                {
+                    outputFile.println("Box " + x + " " + y + " " + z + " " + width + " " + height + " " + depth);
+                }
+                catch(Exception e)
+                {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText("Could not save file");
+                    alert.show();
+                }
+            }
+            else if(testShape instanceof Sphere)
+            {
+                x = testShape.getTranslateX();
+                y = testShape.getTranslateY();
+                z = testShape.getTranslateZ();
+                radius = ((Sphere) testShape).getRadius();
+                try
+                {
+                    outputFile.println("Sphere " + x + " " + y + " " + z + " " + radius);
+                }
+                catch(Exception e)
+                {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText("Could not save file");
+                    alert.show();
+                }
+            }
+
+        }
+        outputFile.close();
+
+    }
+
+    public void createBox(double x, double y, double width, double height, double depth){
         Box box = new Box(width,height,depth);
         box.getTransforms().add(new Translate(x,y,0));
 
         box.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            try {
-                if (XtranslateField.getText() != "")
-                    box.setTranslateX(Double.parseDouble(XtranslateField.getText()));
-                if (YtranslateField.getText() != "")
-                    box.setTranslateY(Double.parseDouble(YtranslateField.getText()));
-                if (ZtranslateField.getText() != "")
-                    box.setTranslateZ(Double.parseDouble(ZtranslateField.getText()));
-            }
-            catch (NumberFormatException e){
-
-            }
         });
         shapeGroup.getChildren().add(box);
     }
 
-    public void createSphere(int x, int y, int radius){
+    public void createSphere(double x, double y, double radius){
         Sphere sphere = new Sphere(radius);
         sphere.getTransforms().add(new Translate(x,y,0));
         sphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            try {
-                if (XtranslateField.getText() != "")
-                    sphere.setTranslateX(Double.parseDouble(XtranslateField.getText()));
-                if (YtranslateField.getText() != "")
-                    sphere.setTranslateY(Double.parseDouble(YtranslateField.getText()));
-                if (ZtranslateField.getText() != "")
-                    sphere.setTranslateZ(Double.parseDouble(ZtranslateField.getText()));
-            }
-            catch (NumberFormatException e){
-
-            }
         });
         shapeGroup.getChildren().add(sphere);
     }
 
-    public void createCylinder(int x, int y, int radius, int depth){
+    public void createCylinder(double x, double y, double radius, double depth){
         Cylinder cylinder = new Cylinder(radius,depth);
         cylinder.getTransforms().add(new Translate(x,y,0));
         cylinder.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            try {
-                if (XtranslateField.getText() != "")
-                    cylinder.setTranslateX(Double.parseDouble(XtranslateField.getText()));
-                if (YtranslateField.getText() != "")
-                    cylinder.setTranslateY(Double.parseDouble(YtranslateField.getText()));
-                if (ZtranslateField.getText() != "")
-                    cylinder.setTranslateZ(Double.parseDouble(ZtranslateField.getText()));
-            }
-            catch (NumberFormatException e){
-
-            }
         });
         shapeGroup.getChildren().add(cylinder);
     }
-
-
 
 
 
