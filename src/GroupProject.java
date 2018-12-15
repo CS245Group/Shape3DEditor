@@ -14,12 +14,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.Shape3D;
 import javafx.scene.shape.Sphere;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -76,6 +78,10 @@ public class GroupProject extends Application {
     private TextField YscaleField;
     private TextField ZscaleField;
     private TextField colorField;
+
+    private ChoiceBox<String> colorChoice;
+
+    private Scale scale;
 
     public void start(Stage primaryStage) throws IOException{
 
@@ -143,23 +149,23 @@ public class GroupProject extends Application {
         VBox translateVbox = new VBox(10,XtranslateBox,YtranslateBox,ZtranslateBox);
 
         Label Xscale = new Label("X Scale");
-        XscaleField = new TextField("");
+        XscaleField = new TextField("1");
         HBox XscaleBox = new HBox(10,Xscale,XscaleField);
 
         Label Yscale = new Label("Y Scale");
-        YscaleField = new TextField("");
+        YscaleField = new TextField("1");
         HBox YscaleBox = new HBox(10,Yscale,YscaleField);
 
         Label Zscale = new Label("Z Scale");
-        ZscaleField = new TextField("");
+        ZscaleField = new TextField("1");
         HBox ZscaleBox = new HBox(10,Zscale,ZscaleField);
 
         VBox scaleVbox = new VBox(10,XscaleBox,YscaleBox,ZscaleBox);
 
 
-        Label colorLabel = new Label("Color #");
-        colorField = new TextField("");
-        HBox colorHbox = new HBox(5,colorLabel,colorField);
+        Label colorLabel = new Label("Colors");
+        colorChoice = getColorChoices();
+        HBox colorHbox = new HBox(5,colorLabel,colorChoice);
 
 
         VBox toolBox = new VBox(10,rotateVbox,translateVbox,scaleVbox,colorHbox);
@@ -483,6 +489,32 @@ public class GroupProject extends Application {
         box.getTransforms().add(new Translate(x,y,0));
 
         box.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            try {
+
+                if (XtranslateField.getText() != "")
+                    box.setTranslateX(Double.parseDouble(XtranslateField.getText()));
+                if (YtranslateField.getText() != "")
+                    box.setTranslateY(Double.parseDouble(YtranslateField.getText()));
+                if (ZtranslateField.getText() != "")
+                    box.setTranslateZ(Double.parseDouble(ZtranslateField.getText()));
+
+            }
+            catch (NumberFormatException e){
+
+            }
+            try {
+                scale = new Scale(Double.parseDouble(XscaleField.getText()), Double.parseDouble(YscaleField.getText()), Double.parseDouble(ZscaleField.getText()));
+                box.getTransforms().addAll(scale);
+            }
+            catch (NumberFormatException e){
+
+            }
+            if(colorChoice.getSelectionModel().getSelectedItem() == "BLUE")
+                box.setMaterial(new PhongMaterial(Color.BLUE));
+            if(colorChoice.getSelectionModel().getSelectedItem() == "GREEN")
+                box.setMaterial(new PhongMaterial(Color.GREEN));
+            if(colorChoice.getSelectionModel().getSelectedItem() == "RED")
+                box.setMaterial(new PhongMaterial(Color.RED));
         });
         shapeGroup.getChildren().add(box);
     }
@@ -491,6 +523,29 @@ public class GroupProject extends Application {
         Sphere sphere = new Sphere(radius);
         sphere.getTransforms().add(new Translate(x,y,0));
         sphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            try {
+                if (XtranslateField.getText() != "")
+                    sphere.setTranslateX(Double.parseDouble(XtranslateField.getText()));
+                if (YtranslateField.getText() != "")
+                    sphere.setTranslateY(Double.parseDouble(YtranslateField.getText()));
+                if (ZtranslateField.getText() != "")
+                    sphere.setTranslateZ(Double.parseDouble(ZtranslateField.getText()));
+            }
+            catch (NumberFormatException e){}
+
+            try {
+                scale = new Scale(Double.parseDouble(XscaleField.getText()), Double.parseDouble(YscaleField.getText()), Double.parseDouble(ZscaleField.getText()));
+                sphere.getTransforms().addAll(scale);
+            }
+            catch (NumberFormatException e){}
+
+
+            if(colorChoice.getSelectionModel().getSelectedItem() == "BLUE")
+                sphere.setMaterial(new PhongMaterial(Color.BLUE));
+            if(colorChoice.getSelectionModel().getSelectedItem() == "GREEN")
+                sphere.setMaterial(new PhongMaterial(Color.GREEN));
+            if(colorChoice.getSelectionModel().getSelectedItem() == "RED")
+                sphere.setMaterial(new PhongMaterial(Color.RED));
         });
         shapeGroup.getChildren().add(sphere);
     }
@@ -499,8 +554,37 @@ public class GroupProject extends Application {
         Cylinder cylinder = new Cylinder(radius,depth);
         cylinder.getTransforms().add(new Translate(x,y,0));
         cylinder.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            try {
+                if (XtranslateField.getText() != "")
+                    cylinder.setTranslateX(Double.parseDouble(XtranslateField.getText()));
+                if (YtranslateField.getText() != "")
+                    cylinder.setTranslateY(Double.parseDouble(YtranslateField.getText()));
+                if (ZtranslateField.getText() != "")
+                    cylinder.setTranslateZ(Double.parseDouble(ZtranslateField.getText()));
+            }
+            catch (NumberFormatException e){}
+
+            try {
+                scale = new Scale(Double.parseDouble(XscaleField.getText()), Double.parseDouble(YscaleField.getText()), Double.parseDouble(ZscaleField.getText()));
+                cylinder.getTransforms().addAll(scale);
+            }
+            catch (NumberFormatException e){}
+
+            if(colorChoice.getSelectionModel().getSelectedItem() == "BLUE")
+                cylinder.setMaterial(new PhongMaterial(Color.BLUE));
+            if(colorChoice.getSelectionModel().getSelectedItem() == "GREEN")
+                cylinder.setMaterial(new PhongMaterial(Color.GREEN));
+            if(colorChoice.getSelectionModel().getSelectedItem() == "RED")
+                cylinder.setMaterial(new PhongMaterial(Color.RED));
         });
         shapeGroup.getChildren().add(cylinder);
+    }
+
+    ChoiceBox<String> getColorChoices()
+    {
+        ChoiceBox<String> colorChoice = new ChoiceBox<>();
+        colorChoice.getItems().addAll("RED", "BLUE", "GREEN");
+        return colorChoice;
     }
 
 
