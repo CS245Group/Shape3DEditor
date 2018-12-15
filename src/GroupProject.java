@@ -14,8 +14,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
+import javafx.scene.shape.Shape3D;
 import javafx.scene.shape.Sphere;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -43,6 +45,16 @@ public class GroupProject extends Application {
     private Stage window;
     private Scene addShapeScene;
     private VBox shapeVbox;
+
+    private Slider XSliderRotate;
+    private Slider YSliderRotate;
+    private Slider ZSliderRotate;
+
+    private Rotate X_Rotate;
+    private Rotate Y_Rotate;
+    private Rotate Z_Rotate;
+
+    private Shape3D selectedShape;
 
     public void start(Stage primaryStage) throws IOException{
         window = primaryStage;
@@ -73,10 +85,62 @@ public class GroupProject extends Application {
         buttonVbox.setPadding(new Insets(50));
         buttonVbox.setAlignment(Pos.CENTER);
         buttonVbox.setId("buttonVbox");
+
+        Label Xrotate = new Label("X Rotate");
+        XSliderRotate = new Slider(0.0,360,0);
+        XSliderRotate.setShowTickLabels(true);
+        XSliderRotate.setShowTickMarks(true);
+
+        Label Yrotate = new Label("Y Rotate");
+        YSliderRotate = new Slider(0.0,360,0);
+        YSliderRotate.setShowTickLabels(true);
+        YSliderRotate.setShowTickMarks(true);
+
+        Label Zrotate = new Label("Z Rotate");
+        ZSliderRotate = new Slider(0.0,360,0);
+        ZSliderRotate.setShowTickLabels(true);
+        ZSliderRotate.setShowTickMarks(true);
+
+        VBox rotateVbox = new VBox(5,Xrotate,XSliderRotate,Yrotate,YSliderRotate,Zrotate,ZSliderRotate);
+
+        Label Xtranslate = new Label("X Translate");
+        TextField XtranslateField = new TextField("");
+        HBox XtranslateBox = new HBox(10,Xtranslate, XtranslateField);
+
+
+        Label Ytranslate = new Label("Y Translate");
+        TextField YtranslateField = new TextField("");
+        HBox YtranslateBox = new HBox(10,Ytranslate,YtranslateField);
+
+
+        Label Ztranslate = new Label("Z Translate");
+        TextField ZtranslateField = new TextField("");
+        HBox ZtranslateBox = new HBox(10,Ztranslate,ZtranslateField);
+        VBox translateVbox = new VBox(10,XtranslateBox,YtranslateBox,ZtranslateBox);
+
+        Label Xscale = new Label("X Scale");
+        TextField XscaleField = new TextField("");
+        HBox XscaleBox = new HBox(10,Xscale,XscaleField);
+
+        Label Yscale = new Label("Y Scale");
+        TextField YscaleField = new TextField("");
+        HBox YscaleBox = new HBox(10,Yscale,YscaleField);
+
+        Label Zscale = new Label("Z Scale");
+        TextField ZscaleField = new TextField("");
+        HBox ZscaleBox = new HBox(10,Zscale,ZscaleField);
+
+        VBox scaleVbox = new VBox(10,XscaleBox,YscaleBox,ZscaleBox);
+
+
+        Label colorLabel = new Label("Color #");
+        TextField colorField = new TextField("");
+        HBox colorHbox = new HBox(5,colorLabel,colorField);
         
 
+        VBox toolBox = new VBox(10,rotateVbox,translateVbox,scaleVbox,colorHbox);
 
-
+        pane.setCenter(toolBox);
 
         pane.setBottom(buttonVbox);
 
@@ -160,9 +224,9 @@ public class GroupProject extends Application {
         Text sphereRadiusText = new Text("Radius: ");
         Text sphereXText = new Text("X Translate: ");
         Text sphereYText = new Text("Y Translate: ");
-        TextField sphereRadius = new TextField();
-        TextField sphereTranslateX = new TextField();
-        TextField sphereTranslateY = new TextField();
+        TextField sphereRadius = new TextField("");
+        TextField sphereTranslateX = new TextField("");
+        TextField sphereTranslateY = new TextField("");
 
         //Box scene
         Text boxWidthText = new Text("Width: ");
@@ -170,21 +234,21 @@ public class GroupProject extends Application {
         Text boxDepthText = new Text("Depth: ");
         Text boxXText = new Text("X Translate: ");
         Text boxYText = new Text("Y Translate: ");
-        TextField boxWidth = new TextField();
-        TextField boxHeight = new TextField();
-        TextField boxDepth = new TextField();
-        TextField boxTranslateX = new TextField();
-        TextField boxTranslateY = new TextField();
+        TextField boxWidth = new TextField("");
+        TextField boxHeight = new TextField("");
+        TextField boxDepth = new TextField("");
+        TextField boxTranslateX = new TextField("");
+        TextField boxTranslateY = new TextField("");
 
         //Cylinder scene
         Text cylinderDepthText = new Text("Depth: ");
         Text cylinderRadiusText = new Text("Radius: ");
         Text cylinderXText = new Text("X Translate: ");
         Text cylinderYText = new Text("Y Translate: ");
-        TextField cylinderDepth = new TextField();
-        TextField cylinderRadius = new TextField();
-        TextField cylinderTranslateX = new TextField();
-        TextField cylinderTranslateY = new TextField();
+        TextField cylinderDepth = new TextField("");
+        TextField cylinderRadius = new TextField("");
+        TextField cylinderTranslateX = new TextField("");
+        TextField cylinderTranslateY = new TextField("");
 
 
 
@@ -268,6 +332,8 @@ public class GroupProject extends Application {
         box.getTransforms().add(new Translate(x,y,0));
 
         box.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            selectedShape = box;
+
         });
         shapeGroup.getChildren().add(box);
     }
@@ -276,6 +342,7 @@ public class GroupProject extends Application {
         Sphere sphere = new Sphere(radius);
         sphere.getTransforms().add(new Translate(x,y,0));
         sphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            selectedShape = sphere;
         });
         shapeGroup.getChildren().add(sphere);
     }
@@ -284,9 +351,12 @@ public class GroupProject extends Application {
         Cylinder cylinder = new Cylinder(radius,depth);
         cylinder.getTransforms().add(new Translate(x,y,0));
         cylinder.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            selectedShape = cylinder;
         });
         shapeGroup.getChildren().add(cylinder);
     }
+
+
 
 
 
